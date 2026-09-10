@@ -1,0 +1,26 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.lock.hcl
+
+# Terraform crash/debug files
+crash.log
+crash.*.log
+
+# Private keys
+*.pem
+*.key
+
+# Ansible
+ansible/*.retry
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Downloaded installation binaries
+ansible/kubectl
+ansible/*.deb
