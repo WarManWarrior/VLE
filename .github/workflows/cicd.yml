@@ -10,6 +10,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
+
       - name: Checkout source code
         uses: actions/checkout@v4
 
@@ -23,16 +24,19 @@ jobs:
         run: minikube status
 
       - name: Build Docker image
-        run: docker build -t devops-lab-app:latest ./app
+        run: docker build -t devops-lab-app:${{ github.sha }} ./app
 
       - name: Load image into Minikube
-        run: minikube image load devops-lab-app:latest
+        run: minikube image load devops-lab-app:${{ github.sha }}
 
-      - name: Deploy application
+      - name: Deploy Kubernetes manifests
         run: kubectl apply -f k8s/deployment.yml
 
-      - name: Deploy service
+      - name: Deploy Kubernetes service
         run: kubectl apply -f k8s/service.yml
+
+      - name: Update deployment image
+        run: kubectl set image deployment/devops-app devops-container=devops-lab-app:${{ github.sha }}
 
       - name: Wait for rollout
         run: kubectl rollout status deployment/devops-app --timeout=120s
@@ -41,7 +45,7 @@ jobs:
         run: kubectl get deployments
 
       - name: Verify pods
-        run: kubectl get pods
+        run: kubectl get pods -o wide
 
       - name: Verify service
         run: kubectl get service devops-service
